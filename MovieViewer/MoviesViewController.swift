@@ -9,17 +9,35 @@
 import UIKit
 import AFNetworking
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+    
+    var refreshControl: UIRefreshControl!
+   
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+  
     @IBOutlet weak var tableView: UITableView!
     
-    var movies : [NSDictionary]?
+    var movies : [NSDictionary] = []
+    
+    var filteredMovies: [NSDictionary] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
+        refreshControl  = UIRefreshControl()
+        refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
+        tableView.insertSubview(refreshControl, atIndex: 0)
+        
+        
+        
         tableView.dataSource = self
         tableView.delegate = self
+        
+        searchBar.delegate = self
+        
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
@@ -39,6 +57,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                             
                             self.movies = responseDictionary["results"] as! [NSDictionary]
                             
+                            self.filteredMovies = responseDictionary["results"] as! [NSDictionary]
+                            
+                            
                             self.tableView.reloadData()
                             
                     }
@@ -48,7 +69,22 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
         // Do any additional setup after loading the view.
     }
-
+    
+    
+    func delay(delay:Double, closure:()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), closure)
+    }
+    
+    func onRefresh() {
+        delay(2, closure: {
+            self.refreshControl.endRefreshing()
+        })
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -56,15 +92,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if let movies = movies {
-        
-            return movies.count
-            
-        } else {
-            
-            return 0
-        
-        }
+        return filteredMovies.count
         
     }
     
@@ -72,7 +100,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies[indexPath.row]
         
         let title = movie["title"] as! String
         
@@ -88,7 +116,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
-        cell.posterView.setImageWithURL(imageURL!)
+        cell.posterView.setImageWithURL(imageURL!		)
         
         
         
@@ -97,8 +125,39 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         print("row \(indexPath.row)")
         
         return cell
+        
+        
     
-    }    /*
+    }
+    
+    func searchBar(searchBar : UISearchBar, textDidChange searchText: String) {
+    
+        if(searchText.isEmpty){
+        
+      filteredMovies = movies
+            
+            }
+            
+        
+        
+        
+        else{
+        
+            
+            filteredMovies = movies.filter() { (movie: NSDictionary) -> (Bool) in
+                let title = movie["title"] as! String
+                return (title.lowercaseString as String).containsString(searchText)
+                
+            }
+            
+        }
+    
+        self.tableView.reloadData()
+    }
+    
+    
+    
+    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
