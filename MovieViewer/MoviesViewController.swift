@@ -131,28 +131,13 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func searchBar(searchBar : UISearchBar, textDidChange searchText: String) {
-    
-        if(searchText.isEmpty){
+        filteredMovies = searchText.isEmpty ? movies : movies.filter({ (movie: NSDictionary) -> Bool in
+            let title = movie["title"] as! String
+            return title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+        })
         
-      filteredMovies = movies
-            
-            }
-            
-        
-        
-        
-        else{
-        
-            
-            filteredMovies = movies.filter() { (movie: NSDictionary) -> (Bool) in
-                let title = movie["title"] as! String
-                return (title.lowercaseString as String).containsString(searchText)
-                
-            }
-            
-        }
-    
-        self.tableView.reloadData()
+        tableView.reloadData()
+           
     }
     
     
