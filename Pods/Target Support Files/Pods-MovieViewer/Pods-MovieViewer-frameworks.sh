@@ -85,7 +85,11 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-MovieViewer/AFNetworking.framework"
+  install_framework "Pods-MovieViewer/EZLoadingActivity.framework"
+  install_framework "Pods-MovieViewer/MBProgressHUD.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-MovieViewer/AFNetworking.framework"
+  install_framework "Pods-MovieViewer/EZLoadingActivity.framework"
+  install_framework "Pods-MovieViewer/MBProgressHUD.framework"
 fi
