@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C105F999E45BF0E3A82913C48EC0ED14C3789615",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "C105F999E45BF0E3A82913C48EC0ED14C3789615" : 0,
+    "13DF5F9424D2E42DFBEFDE590AD9621A244CB352" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D09FC240-1316-422E-8E22-4AE40E1B1D17",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "C105F999E45BF0E3A82913C48EC0ED14C3789615" : "MovieViewer\/",
+    "13DF5F9424D2E42DFBEFDE590AD9621A244CB352" : "MovieViewer\/MovieViewer\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MovieViewer",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MovieViewer.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/franktank\/FlicksCodePath.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "13DF5F9424D2E42DFBEFDE590AD9621A244CB352"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/franktank\/Flicks.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C105F999E45BF0E3A82913C48EC0ED14C3789615"
+    }
+  ]
+}
