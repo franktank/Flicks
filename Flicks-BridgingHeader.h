@@ -6,8 +6,12 @@
 //  Copyright © 2016 Franky Liang. All rights reserved.
 //
 
-#ifndef Flicks_BridgingHeader_h
-#define Flicks_BridgingHeader_h
+#ifndef MovieViewer_BridgingHeader_h
+#define MovieViewer_BridgingHeader_h
+
+#import &lt;MBProgressHUD.h&gt;
+
+
 
 
 #endif /* Flicks_BridgingHeader_h */

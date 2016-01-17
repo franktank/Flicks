@@ -18,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		0A10FBC31C44A60D0024F2E9 /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		0AB80B221C4740F500EDBB12 /* Flicks-BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Flicks-BridgingHeader.h"; sourceTree = "<group>"; };
 		0AEB898F1C44770200629A59 /* MovieViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AEB89921C44770300629A59 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0AEB89971C44770300629A59 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -61,6 +62,7 @@
 		0AEB89861C44770000629A59 = {
 			isa = PBXGroup;
 			children = (
+				0AB80B221C4740F500EDBB12 /* Flicks-BridgingHeader.h */,
 				0AEB89911C44770200629A59 /* MovieViewer */,
 				0AEB89901C44770200629A59 /* Products */,
 				2643B116FAF578BB866C4DE9 /* Pods */,

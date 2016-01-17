@@ -6,8 +6,11 @@
 //  Copyright © 2016 Franky Liang. All rights reserved.
 //
 
+
 import UIKit
 import AFNetworking
+import EZLoadingActivity
+
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     
@@ -15,6 +18,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
    
     @IBOutlet weak var searchBar: UISearchBar!
     
+    @IBOutlet weak var networkErrorLabel: UILabel!
   
     @IBOutlet weak var tableView: UITableView!
     
@@ -25,12 +29,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        networkErrorLabel.hidden = true
         
         refreshControl  = UIRefreshControl()
         refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
-        tableView.insertSubview(refreshControl, atIndex: 0)
-        
+        //tableView.insertSubview(refreshControl, atIndex: 0)
+        tableView.addSubview(refreshControl)
         
         
         tableView.dataSource = self
@@ -47,6 +51,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             delegate:nil,
             delegateQueue:NSOperationQueue.mainQueue()
         )
+        
+       
+        
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            
+            
+            if(error != nil){
+                self.networkErrorLabel.hidden = false
+                return
+            }
+        
         
         let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
             completionHandler: { (dataOrNil, response, error) in
@@ -66,10 +81,16 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                 }
         });
         task.resume()
+        
+    })
 
         // Do any additional setup after loading the view.
     }
     
+    override func viewDidAppear(animated: Bool) {
+        
+        EZLoadingActivity.showWithDelay("Loading...", disableUI: false, seconds: 1)
+    }
     
     func delay(delay:Double, closure:()->()) {
         dispatch_after(
@@ -80,10 +101,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             dispatch_get_main_queue(), closure)
     }
     
+   
     func onRefresh() {
-        delay(2, closure: {
+        
+            self.tableView.reloadData()
             self.refreshControl.endRefreshing()
-        })
+    
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -110,13 +133,34 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         let posterPath = movie["poster_path"] as! String
         
-        let imageURL = NSURL(string: baseURL + posterPath)
+        
+        
+        //let imageURL = NSURL(string: baseURL + posterPath)
+        
+        let posterURL = baseURL + posterPath
+        
+        let imageRequest = NSURLRequest(URL: NSURL(string: posterURL)!)
+        
+        cell.posterView.setImageWithURLRequest( imageRequest, placeholderImage: nil, success: {(imageRequest, imageResponse, image) -> Void in
+            
+            if imageResponse != nil {
+                cell.posterView.alpha = 0.0
+                cell.posterView.image = image
+                UIView.animateWithDuration(1.2, animations:{ () -> Void in cell.posterView.alpha = 1.0})
+            
+            } else {
+            
+                cell.posterView.image = image
+            
+            }
+        },
+            failure: { (imageRequest, imageResponse, error) -> Void in })
         
         
         
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
-        cell.posterView.setImageWithURL(imageURL!		)
+        //cell.posterView.setImageWithURL(imageURL!		)
         
         
         
