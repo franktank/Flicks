@@ -41,8 +41,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         
         searchBar.delegate = self
-        
-        
+        //commented out and added function
+        /*
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
         let request = NSURLRequest(URL: url!)
@@ -83,15 +83,75 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         task.resume()
         
     })
-
+        */
         // Do any additional setup after loading the view.
+        EZLoadingActivity.show("Loading...", disableUI: false)
+        networkRequest() { () -> Void in
+            EZLoadingActivity.hide()
+        
+        }
     }
     
+    
+    /*
     override func viewDidAppear(animated: Bool) {
         
         EZLoadingActivity.showWithDelay("Loading...", disableUI: false, seconds: 1)
     }
+    */
     
+    //network request
+    func networkRequest(completion: (() -> Void)?) {
+        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+        let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+        let request = NSURLRequest(URL: url!)
+        let session = NSURLSession(
+            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+            delegate:nil,
+            delegateQueue:NSOperationQueue.mainQueue()
+        )
+        
+        
+        
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            
+            
+            if(error != nil){
+                self.networkErrorLabel.hidden = false
+                return
+            }
+            
+            
+            let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
+                completionHandler: { (dataOrNil, response, error) in
+                    if let data = dataOrNil {
+                        if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
+                            data, options:[]) as? NSDictionary {
+                                NSLog("response: \(responseDictionary)")
+                                
+                                self.movies = responseDictionary["results"] as! [NSDictionary]
+                                
+                                self.filteredMovies = responseDictionary["results"] as! [NSDictionary]
+                                
+                                
+                                self.tableView.reloadData()
+                                
+                                if(completion != nil){
+                                    completion!()
+                                }
+                                
+                        }
+                    }
+            });
+            task.resume()
+            
+        })
+     
+    }
+    
+    
+    
+    //delay
     func delay(delay:Double, closure:()->()) {
         dispatch_after(
             dispatch_time(
@@ -131,7 +191,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         let baseURL = "http://image.tmdb.org/t/p/w500"
         
-        let posterPath = movie["poster_path"] as! String
+        if let posterPath = movie["poster_path"] as? String{
         
         
         
@@ -157,7 +217,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             failure: { (imageRequest, imageResponse, error) -> Void in })
         
         
-        
+        }
         cell.titleLabel.text = title
         cell.overviewLabel.text = overview
         //cell.posterView.setImageWithURL(imageURL!		)
@@ -186,14 +246,26 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     
     
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        let cell = sender as! UITableViewCell
+        
+        let indexPath = tableView.indexPathForCell(cell)
+        
+        let movie = movies[indexPath!.row]
+        
+        
+        let detailViewController = segue.destinationViewController as! DetailViewController
+        
+        detailViewController.movie = movie
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
-    */
+
 
 }
