@@ -240,6 +240,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         print("row \(indexPath.row)")
         
+        cell.selectionStyle = .Gray
+        
+        let backgroundView = UIView()
+        
+        backgroundView.backgroundColor = UIColor.redColor()
+        
+        cell.selectedBackgroundView = backgroundView
+        
         return cell
         
         
