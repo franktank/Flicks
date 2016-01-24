@@ -26,6 +26,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
     var filteredMovies: [NSDictionary] = []
     
+    var endpoint: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,9 +35,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         refreshControl  = UIRefreshControl()
         refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
-        //tableView.insertSubview(refreshControl, atIndex: 0)
-        tableView.addSubview(refreshControl)
-        
+        tableView.insertSubview(refreshControl, atIndex: 0)
+        //tableView.addSubview(refreshControl)
+        	
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -103,7 +105,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     //network request
     func networkRequest(completion: (() -> Void)?) {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+        let url = NSURL(string:"https://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
+        
+        print(url)
+        
         let request = NSURLRequest(URL: url!)
         let session = NSURLSession(
             configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
@@ -113,14 +118,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         
         
-        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+        
             
             
-            if(error != nil){
-                self.networkErrorLabel.hidden = false
-                return
-            }
-            
+        
+
             
             let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
                 completionHandler: { (dataOrNil, response, error) in
@@ -136,16 +138,24 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                                 
                                 self.tableView.reloadData()
                                 
+                              
                                 if(completion != nil){
                                     completion!()
                                 }
                                 
                         }
                     }
+                    else {
+                        
+                        
+                        self.networkErrorLabel.hidden = false
+                        return
+                    }
+                    
             });
             task.resume()
             
-        })
+        
      
     }
     
@@ -163,7 +173,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     
    
     func onRefresh() {
-        
+        networkRequest() { () -> Void in
+            
+        }
             self.tableView.reloadData()
             self.refreshControl.endRefreshing()
     
